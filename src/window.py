@@ -3,13 +3,13 @@ from tkinter import Tk, BOTH, Canvas
 
 class Window:
 
-    def __init__(self, width, height, title="Window"):
-        self.__width = width
-        self.__height = height
+    def __init__(self, width, height):
         self.__root = Tk()
-        self.__root.title(title)
-        self.__canvas = Canvas(self.__root, width=self.__width, height=self.__height)
-        self.__canvas.pack()
+        self.__root.title("Maze Solver")
+        self.__canvas = Canvas(self.__root, bg="white", height=height, width=width)
+        #expand (boolean): specifies whether the content should be expanded to consume extra space in their container
+        #fill BOTH: stretch the content both horizontally and vertically
+        self.__canvas.pack(fill=BOTH, expand=1)
         self.__running = False
         self.__root.protocol("WM_DELETE_WINDOW", self.close)
 
