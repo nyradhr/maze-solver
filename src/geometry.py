@@ -11,11 +11,9 @@ class Line:
         self.__point_2 = point_2
 
     #fill_color is a string (e.g. "black" or "red")
-    def draw(self, canvas, fill_color):
+    def draw(self, canvas, fill_color="black"):
         x1 = self.__point_1.x
         y1 = self.__point_1.y
         x2 = self.__point_2.x
         y2 = self.__point_2.y
         canvas.create_line(x1, y1, x2, y2, fill=fill_color, width=2)
-
-    
