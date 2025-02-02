@@ -4,7 +4,8 @@ from time import sleep
 
 class Maze:
 
-    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, window):
+    def __init__(self, x1, y1, num_rows, num_cols, cell_size_x, cell_size_y, window=None):
+        self._cells = []
         self.x1 = x1
         self.y1 = y1
         self.num_rows = num_rows
@@ -18,7 +19,8 @@ class Maze:
         self._cells = [[Cell(self.win) for j in range(self.num_rows)] for i in range(self.num_cols)]
         for col in range(self.num_cols):
             for row in range(self.num_rows):
-                self._draw_cell(col, row)
+                if self.win is not None:
+                    self._draw_cell(col, row)
 
     def _draw_cell(self, col, row):
         x1 = (col * self.cell_size_x) + self.x1

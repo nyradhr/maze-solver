@@ -2,7 +2,7 @@ from geometry import Point, Line
 
 class Cell:
 
-    def __init__(self, window):
+    def __init__(self, window=None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
