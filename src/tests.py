@@ -17,11 +17,10 @@ class Tests(unittest.TestCase):
             num_rows,
         )
     
-    def test_maze_create_cells_with_win(self): #this opens a window and draws the maze
-        win = Window(400, 300)
-        num_cols = 15
-        num_rows = 15
-        m1 = Maze(50, 50, num_rows, num_cols, 15, 15, win)
+    def test_maze_create_cells_no_win_big_cells(self):
+        num_cols = 150
+        num_rows = 150
+        m1 = Maze(50, 50, num_rows, num_cols, 50, 50)
         self.assertEqual(
             len(m1._cells),
             num_cols,
@@ -29,6 +28,19 @@ class Tests(unittest.TestCase):
         self.assertEqual(
             len(m1._cells[0]),
             num_rows,
+        )
+
+    def test_break_entrance_and_exit(self):
+        num_cols = 15
+        num_rows = 15
+        m1 = Maze(50, 50, num_rows, num_cols, 15, 15)
+        self.assertEqual(
+            m1._cells[0][0].has_top_wall,
+            False,
+        )
+        self.assertEqual(
+            m1._cells[num_cols - 1][num_rows - 1].has_bottom_wall,
+            False,
         )
 
 if __name__ == "__main__":
