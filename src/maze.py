@@ -14,12 +14,11 @@ class Maze:
         self.cell_size_x = cell_size_x
         self.cell_size_y = cell_size_y
         self.win = window
+        if seed_num:
+            seed(seed_num)
         self._create_cells()
         self._break_entrance_and_exit()
-        self._seed = seed_num
-        if self._seed is not None:
-            seed(self._seed)
-        self._break_walls_r(0,0)
+        self._break_walls_r(0, 0)
     
     def _create_cells(self):
         self._cells = [[Cell(self.win) for j in range(self.num_rows)] for i in range(self.num_cols)]
