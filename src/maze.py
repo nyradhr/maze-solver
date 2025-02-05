@@ -84,7 +84,6 @@ class Maze:
                     self._cells[col][row].has_left_wall = False
                     self._cells[col-1][row].has_right_wall = False
                 self._break_walls_r(direction[0], direction[1])
-                return
 
     def _reset_cells_visited(self):
         for col in range(self.num_cols):

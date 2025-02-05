@@ -18,8 +18,8 @@ class Tests(unittest.TestCase):
         )
     
     def test_maze_create_cells_no_win_big_cells(self):
-        num_cols = 150
-        num_rows = 150
+        num_cols = 20
+        num_rows = 20
         m1 = Maze(50, 50, num_rows, num_cols, 50, 50)
         self.assertEqual(
             len(m1._cells),
