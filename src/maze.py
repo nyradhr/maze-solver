@@ -32,8 +32,8 @@ class Maze:
             return
         x1 = (col * self.cell_size_x) + self.x1
         y1 = (row * self.cell_size_y) + self.y1
-        x2 = ((col+1) * self.cell_size_x) + self.x1
-        y2 = ((row+1) * self.cell_size_y) + self.y1
+        x2 = ((col + 1) * self.cell_size_x) + self.x1
+        y2 = ((row + 1) * self.cell_size_y) + self.y1
         self._cells[col][row].draw(x1, y1, x2, y2)
         self._animate()
     
@@ -49,43 +49,74 @@ class Maze:
         self._cells[self.num_cols - 1][self.num_rows - 1].has_bottom_wall = False
         self._draw_cell(self.num_cols - 1, self.num_rows - 1)
 
+    def _get_available_directions(self, col, row):
+        directions = []
+        if row + 1 < self.num_rows:
+            if not self._cells[col][row + 1].visited:
+                directions.append((col, row + 1)) #down
+        if col + 1 < self.num_cols:
+            if not self._cells[col + 1][row].visited:
+                directions.append((col + 1, row)) #right
+        if row > 0:
+            if not self._cells[col][row - 1].visited:
+                directions.append((col, row - 1)) #up
+        if col > 0:
+            if not self._cells[col - 1][row].visited:
+                directions.append((col - 1, row)) #left
+        return directions
+
     def _break_walls_r(self, col, row):
         self._cells[col][row].visited = True
-        while(True):
-            to_visit = []
-            if row + 1 < self.num_rows:
-                if not self._cells[col][row + 1].visited:
-                    to_visit.append((col, row + 1)) #down
-            if col + 1 < self.num_cols:
-                if not self._cells[col + 1][row].visited:
-                    to_visit.append((col + 1, row)) #right
-            if row > 0:
-                if not self._cells[col][row - 1].visited:
-                    to_visit.append((col, row - 1)) #up
-            if col > 0:
-                if not self._cells[col - 1][row].visited:
-                    to_visit.append((col - 1, row)) #left
-            if len(to_visit) == 0:
-                self._draw_cell(col, row)
-                return
-            else:
-                visit_index = randrange(0, len(to_visit))
-                direction = to_visit[visit_index]
-                if direction[1] > row: #down
-                    self._cells[col][row].has_bottom_wall = False
-                    self._cells[col][row+1].has_top_wall = False
-                elif direction[0] > col: #right
-                    self._cells[col][row].has_right_wall = False
-                    self._cells[col+1][row].has_left_wall = False
-                elif direction[1] < row: #up
-                    self._cells[col][row].has_top_wall = False
-                    self._cells[col][row-1].has_bottom_wall = False
-                elif direction[0] < col: #left
-                    self._cells[col][row].has_left_wall = False
-                    self._cells[col-1][row].has_right_wall = False
-                self._break_walls_r(direction[0], direction[1])
+        to_visit = self._get_available_directions(col, row)
+        while(to_visit):
+            visit_index = randrange(0, len(to_visit))
+            direction = to_visit[visit_index]
+            if direction[1] > row:
+                self._cells[col][row].has_bottom_wall = False
+                self._cells[col][row + 1].has_top_wall = False
+            elif direction[0] > col:
+                self._cells[col][row].has_right_wall = False
+                self._cells[col + 1][row].has_left_wall = False
+            elif direction[1] < row:
+                self._cells[col][row].has_top_wall = False
+                self._cells[col][row - 1].has_bottom_wall = False
+            elif direction[0] < col:
+                self._cells[col][row].has_left_wall = False
+                self._cells[col - 1][row].has_right_wall = False
+            self._break_walls_r(direction[0], direction[1])
+            to_visit = self._get_available_directions(col, row)
+        self._draw_cell(col, row)
 
     def _reset_cells_visited(self):
         for col in range(self.num_cols):
             for row in range(self.num_rows):
                 self._cells[col][row].visited = False
+    
+    def solve(self):
+        return self._solve_r(0, 0)
+
+    def _solve_r(self, col, row):
+        self._animate()
+        self._cells[col][row].visited = True
+        if col == self.num_cols-1 and row == self.num_rows - 1:
+            return True
+        directions = self._get_available_directions(col, row)
+        for direction in directions:
+            if (self._has_path_between(col, row, direction[0], direction[1])):
+                self._cells[col][row].draw_move(self._cells[direction[0]][direction[1]])
+                solved = self._solve_r(direction[0], direction[1])
+                if solved:
+                    return True
+                else:
+                    self._cells[col][row].draw_move(self._cells[direction[0]][direction[1]], True) #undo
+        return False
+    
+    def _has_path_between(self, current_col, current_row, next_col, next_row):
+            if next_row > current_row:
+                return not self._cells[current_col][current_row].has_bottom_wall
+            elif next_col > current_col:
+                return not self._cells[current_col][current_row].has_right_wall
+            elif next_row < current_row:
+                return not self._cells[current_col][current_row].has_top_wall
+            elif next_col < current_col:
+                return not self._cells[current_col][current_row].has_left_wall
